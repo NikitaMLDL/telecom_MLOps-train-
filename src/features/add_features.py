@@ -1,7 +1,7 @@
 import click
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import LabelEncoder
-
 
 @click.command()
 @click.argument("input_path", type=click.Path(exists=True))
@@ -16,12 +16,8 @@ def add_features(input_path: str, output_path: str):
 
     df = pd.read_csv(input_path)
 
-    le = LabelEncoder()
-    df['target'] = le.fit_transform(df['Species'])
-    df.drop(columns=['Id', 'Species'], inplace=True)
-
-    df['sepal_ratio'] = df['SepalLengthCm'] / df['SepalWidthCm']
-    df['petal_ratio'] = df['PetalLengthCm'] / df['PetalWidthCm']
+    df['ratio_day_night_calls'] = round(df['total_day_calls'] / df['total_night_calls'], 2)
+    df['ratio_day_night_calls'] = df['ratio_day_night_calls'].replace([np.inf, -np.inf], 0)
 
     df.to_csv(output_path, index=False)
     click.echo(f"Data with new features saved to {output_path}")

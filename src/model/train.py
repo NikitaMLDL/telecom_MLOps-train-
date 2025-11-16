@@ -14,14 +14,14 @@ from sklearn.pipeline import Pipeline
 @click.command()
 @click.argument("train_path", type=click.Path(exists=True))
 @click.argument("model_output_path", type=click.Path())
-@click.argument("n_estimators", type=int, default=100)
-def train(train_path: str, model_output_path: str, n_estimators: int):
+@click.argument("max_iter", type=int, default=100)
+def train(train_path: str, model_output_path: str, max_iter: int):
     """
     Обучение RandomForestClassifier и сохранение модели в MLflow Model Registry (Staging).
 
     TRAIN_PATH: путь к train CSV
     MODEL_OUTPUT_PATH: путь для сохранения модели
-    N_ESTIMATORS: количество деревьев в лесу
+    MAX_ITER: количество деревьев в лесу
     """
     # Инициализация mlflow
     init_mlflow()
@@ -58,7 +58,7 @@ def train(train_path: str, model_output_path: str, n_estimators: int):
     classifier = LogisticRegression(
         class_weight='balanced',
         solver='liblinear',
-        max_iter=200
+        max_iter=max_iter
     )
 
     pipeline = Pipeline([
@@ -74,7 +74,7 @@ def train(train_path: str, model_output_path: str, n_estimators: int):
         mlflow.log_param("model", "LogisticRegression")
         mlflow.log_param("solver", "liblinear")
         mlflow.log_param("class_weight", "balanced")
-        mlflow.log_param("max_iter", 200)
+        mlflow.log_param("max_iter", max_iter)
 
         # Метрики
         mlflow.log_metric("train_samples", len(df))

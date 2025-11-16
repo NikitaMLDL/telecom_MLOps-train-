@@ -7,27 +7,28 @@ stages:
     outs:
       - data/processed/telecom_clean.csv
 
-  # add_features:
-  #   cmd: python src/features/add_features.py data/processed/telecom_clean.csv data/processed/telecom_features.csv
-  #   deps:
-  #     - src/features/add_features.py
-  #     - data/processed/telecom_clean.csv
-  #   outs:
-  #     - data/processed/telecom_features.csv
+
+  add_features:
+    cmd: python src/features/add_features.py data/processed/telecom_clean.csv data/processed/telecom_features.csv
+    deps:
+      - src/features/add_features.py
+      - data/processed/telecom_clean.csv
+    outs:
+      - data/processed/telecom_features.csv
 
 
   prepare_dataset:
-    cmd: python src/model/prepare_datasets.py data/processed/telecom_clean.csv data/processed/train.csv data/processed/test.csv 0.33
+    cmd: python src/model/prepare_datasets.py data/processed/telecom_features.csv data/processed/train.csv data/processed/test.csv 0.33
     deps:
       - src/model/prepare_datasets.py
-      - data/processed/telecom_clean.csv
+      - data/processed/telecom_features.csv
     outs:
       - data/processed/train.csv
       - data/processed/test.csv
 
 
   train:
-    cmd: python src/model/train.py data/processed/train.csv models/rf_model.pkl 100
+    cmd: python src/model/train.py data/processed/train.csv models/rf_model.pkl 300
     deps:
       - src/model/train.py
       - data/processed/train.csv

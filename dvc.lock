@@ -6,8 +6,8 @@ stages:
     deps:
     - path: data/raw/telecom.csv
       hash: md5
-      md5: 4765c4960be9cdbe249e97eda1b46c20
-      size: 391872
+      md5: 74766610aed198d8f5b2bce5dad01b6e
+      size: 391968
     - path: src/data/clean_data.py
       hash: md5
       md5: 512d3c14342fa047ff02fb24c6e8583b

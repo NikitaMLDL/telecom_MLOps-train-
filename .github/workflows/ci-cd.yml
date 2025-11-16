@@ -1,0 +1,69 @@
+name: CI - Lint & DVC Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  lint-and-dvc:
+    runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      MLFLOW_S3_ENDPOINT_URL: ${{ secrets.AWS_URL }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13.2'
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+            path: ~/.cache/pip
+            key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+            restore-keys: |
+                ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install dvc[s3]
+          pip install flake8 black
+
+      - name: Run lint (flake8)
+        run: flake8 src/data src/features src/model src/setup
+
+      - name: Configure DVC remote
+        run: |
+            dvc init --no-scm || echo "DVC already initialized"
+            dvc remote remove dvcremote || echo "No remote to remove"
+            dvc remote add -f dvcremote s3://mlflow-artifacts
+            dvc remote modify dvcremote access_key_id "${{ secrets.AWS_ACCESS_KEY_ID }}"
+            dvc remote modify dvcremote secret_access_key "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+            dvc remote modify dvcremote endpointurl "${{ secrets.AWS_URL }}"
+
+      - name: Pull DVC data
+        run: |
+          dvc pull
+          dvc pull data/raw/iris.csv.dvc
+
+      - name: Install src package
+        run: |
+          pip install -e .
+
+      - name: Run DVC pipeline
+        run: dvc repro
+
+      # - name: DVC push
+      #   run: dvc push
+
+      - name: Show pipeline outputs
+        run: ls -R data/processed models

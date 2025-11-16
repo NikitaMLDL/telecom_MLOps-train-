@@ -1,0 +1,73 @@
+schema: '2.0'
+stages:
+  clean_data:
+    cmd: python src/data/clean_data.py data/raw/telecom.csv 
+      data/processed/telecom_clean.csv
+    deps:
+    - path: data/raw/telecom.csv
+      hash: md5
+      md5: 4765c4960be9cdbe249e97eda1b46c20
+      size: 391872
+    - path: src/data/clean_data.py
+      hash: md5
+      md5: 512d3c14342fa047ff02fb24c6e8583b
+      size: 531
+    outs:
+    - path: data/processed/telecom_clean.csv
+      hash: md5
+      md5: 4765c4960be9cdbe249e97eda1b46c20
+      size: 391872
+  prepare_dataset:
+    cmd: python src/model/prepare_datasets.py data/processed/telecom_clean.csv 
+      data/processed/train.csv data/processed/test.csv 0.33
+    deps:
+    - path: data/processed/telecom_clean.csv
+      hash: md5
+      md5: 4765c4960be9cdbe249e97eda1b46c20
+      size: 391872
+    - path: src/model/prepare_datasets.py
+      hash: md5
+      md5: 633dea538dab5a4350139aa121e082dc
+      size: 1108
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 193e94f69c8c5405619bd4d3a524b643
+      size: 129624
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 32b303ff87d9beb2d1e0e5486282d0ff
+      size: 262586
+  train:
+    cmd: python src/model/train.py data/processed/train.csv models/rf_model.pkl 
+      100
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 32b303ff87d9beb2d1e0e5486282d0ff
+      size: 262586
+    - path: src/model/train.py
+      hash: md5
+      md5: 23c411eb3f098ffb4a1058112949a9b3
+      size: 4611
+    outs:
+    - path: models/rf_model.pkl
+      hash: md5
+      md5: 09bc430a9024b43e945b4bf3dacb0a07
+      size: 6189
+  evaluate:
+    cmd: python src/model/evaluate.py data/processed/test.csv 
+      models/rf_model.pkl
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: 193e94f69c8c5405619bd4d3a524b643
+      size: 129624
+    - path: models/rf_model.pkl
+      hash: md5
+      md5: 09bc430a9024b43e945b4bf3dacb0a07
+      size: 6189
+    - path: src/model/evaluate.py
+      hash: md5
+      md5: b2946bd4fe594ac2f3b239ab028be5f0
+      size: 1699

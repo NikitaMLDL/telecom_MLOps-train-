@@ -32,9 +32,6 @@ def train(train_path: str, model_output_path: str, n_estimators: int):
     X = df.drop(columns=["churn"])
     y = df["churn"]
 
-    # ----------------------------
-    # 3. Определяем признаки
-    # ----------------------------
     numeric = [
         'account_length', 'number_vmail_messages',
         'total_day_minutes', 'total_day_calls', 'total_day_charge',

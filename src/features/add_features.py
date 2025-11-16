@@ -1,7 +1,7 @@
 import click
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
+
 
 @click.command()
 @click.argument("input_path", type=click.Path(exists=True))

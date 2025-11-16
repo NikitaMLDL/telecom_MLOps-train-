@@ -27,9 +27,6 @@ def train(train_path: str, model_output_path: str, n_estimators: int):
     init_mlflow()
     mlflow.set_experiment("churn_experiment")
 
-    # ----------------------------
-    # 2. Загрузка данных
-    # ----------------------------
     df = pd.read_csv(train_path)
 
     X = df.drop(columns=["churn"])

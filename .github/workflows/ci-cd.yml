@@ -53,7 +53,7 @@ jobs:
       - name: Pull DVC data
         run: |
           dvc pull
-          dvc pull data/raw/iris.csv.dvc
+          dvc pull data/raw/telecom.csv.dvc
 
       - name: Install src package
         run: |

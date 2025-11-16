@@ -45,9 +45,6 @@ def train(train_path: str, model_output_path: str, n_estimators: int):
         'state', 'area_code', 'international_plan', 'voice_mail_plan'
     ]
 
-    # ----------------------------
-    # 4. Препроцессинг
-    # ----------------------------
     numerical_transformer = StandardScaler()
     categorical_transformer = OneHotEncoder(handle_unknown='ignore')
 
@@ -58,9 +55,6 @@ def train(train_path: str, model_output_path: str, n_estimators: int):
         ]
     )
 
-    # ----------------------------
-    # 5. Модель
-    # ----------------------------
     classifier = LogisticRegression(
         class_weight='balanced',
         solver='liblinear',
@@ -72,9 +66,6 @@ def train(train_path: str, model_output_path: str, n_estimators: int):
         ('classifier', classifier)
     ])
 
-    # ----------------------------
-    # 6. MLflow logging
-    # ----------------------------
     with mlflow.start_run():
 
         pipeline.fit(X, y)
@@ -94,9 +85,6 @@ def train(train_path: str, model_output_path: str, n_estimators: int):
         os.makedirs(os.path.dirname(model_output_path), exist_ok=True)
         joblib.dump(pipeline, model_output_path)
 
-        # ------------------------
-        # 8. Логируем модель в MLflow
-        # ------------------------
         mlflow.sklearn.log_model(
             sk_model=pipeline,
             artifact_path="model",

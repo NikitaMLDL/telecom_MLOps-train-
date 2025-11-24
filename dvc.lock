@@ -17,6 +17,23 @@ stages:
       hash: md5
       md5: 4765c4960be9cdbe249e97eda1b46c20
       size: 391872
+  add_features:
+    cmd: python src/features/add_features.py data/processed/telecom_clean.csv 
+      data/processed/telecom_features.csv
+    deps:
+    - path: data/processed/telecom_clean.csv
+      hash: md5
+      md5: 4765c4960be9cdbe249e97eda1b46c20
+      size: 391872
+    - path: src/features/add_features.py
+      hash: md5
+      md5: 6f4aa56c341822844a362126eb935160
+      size: 785
+    outs:
+    - path: data/processed/telecom_features.csv
+      hash: md5
+      md5: b94b737204e12e7fc12dee24f8808af3
+      size: 412753
   prepare_dataset:
     cmd: python src/model/prepare_datasets.py 
       data/processed/telecom_features.csv data/processed/train.csv 
@@ -49,8 +66,8 @@ stages:
       size: 276589
     - path: src/model/train.py
       hash: md5
-      md5: 1223f7e7a8241cc7cf30f86f5d8e46e5
-      size: 3950
+      md5: d694bd5f6511b7f6601d29509a31394e
+      size: 3824
     outs:
     - path: models/rf_model.pkl
       hash: md5
@@ -72,20 +89,3 @@ stages:
       hash: md5
       md5: b2946bd4fe594ac2f3b239ab028be5f0
       size: 1699
-  add_features:
-    cmd: python src/features/add_features.py data/processed/telecom_clean.csv 
-      data/processed/telecom_features.csv
-    deps:
-    - path: data/processed/telecom_clean.csv
-      hash: md5
-      md5: 4765c4960be9cdbe249e97eda1b46c20
-      size: 391872
-    - path: src/features/add_features.py
-      hash: md5
-      md5: 4385e611fe059d750c0321535c1f9dcb
-      size: 831
-    outs:
-    - path: data/processed/telecom_features.csv
-      hash: md5
-      md5: b94b737204e12e7fc12dee24f8808af3
-      size: 412753

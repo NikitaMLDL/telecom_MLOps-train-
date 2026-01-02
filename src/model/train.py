@@ -79,9 +79,6 @@ def train(train_path: str, model_output_path: str, max_iter: int):
         # Метрики
         mlflow.log_metric("train_samples", len(df))
 
-        # ------------------------
-        # 7. Локальное сохранение
-        # ------------------------
         os.makedirs(os.path.dirname(model_output_path), exist_ok=True)
         joblib.dump(pipeline, model_output_path)
 
